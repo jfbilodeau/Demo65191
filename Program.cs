@@ -1,4 +1,4 @@
-// Copyright J-F Bilodeau 2024
+// Copyright J-F Bilodeau 2023-2024
 
 var builder = WebApplication.CreateBuilder(args);
 
