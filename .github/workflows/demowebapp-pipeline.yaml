@@ -74,7 +74,7 @@ jobs:
         path: arm
 
     - name: Deploy DemoWebapp to Azure App Service Web App
-      uses: azure/webapps-deploy@2
+      uses: azure/webapps-deploy@v2
       with: 
         app-name: jfdemowebapparm
         package: ./out
