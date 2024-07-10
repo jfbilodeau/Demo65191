@@ -53,13 +53,6 @@ jobs:
       with:
         # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
-    - name: Deploy Bicep file
-      run: |
-        az deployment group create \
-          --resource-group Demo65191 \
-          --template-file ./arm/demowebapp-arm.template.bicep \
-          --parameters ./arm/demowebapp-arm.parameter.json
 
     - name: Download DemoWebApp artifact
       uses: actions/download-artifact@v3
@@ -72,6 +65,13 @@ jobs:
       with:
         name: DemoArmTemplates
         path: arm
+      
+    - name: Deploy Bicep file
+      run: |
+        az deployment group create \
+          --resource-group Demo65191 \
+          --template-file ./arm/demowebapp-arm.template.bicep \
+          --parameters ./arm/demowebapp-arm.parameter.json
 
     - name: Deploy DemoWebapp to Azure App Service Web App
       uses: azure/webapps-deploy@v2
