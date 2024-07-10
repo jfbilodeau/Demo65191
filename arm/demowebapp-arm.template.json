@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webAppName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Azure App Service Web App"
+            }
+        },
+        "webAppLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "The location in which the Azure App Service Web App will be hosted"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {
+        "appServicePlanName": "[concat(parameters('webAppName'), '-asp')]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('webAppName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-09-01",
+            "location": "[parameters('webAppLocation')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('webAppName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+            }
+        },
+        {
+            "name": "[variables('appServicePlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-09-01",
+            "location": "[parameters('webAppLocation')]",
+            "sku": {
+                "name": "B1",
+                "tier": "Basic"
+            },
+            "kind": "linux",
+            "properties": {}
+        }
+    ],
+    "outputs": {}
+}
