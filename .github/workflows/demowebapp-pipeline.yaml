@@ -1,4 +1,4 @@
-name: Build and Test ASP.NET Web App
+,name: Build and Test ASP.NET Web App
 
 on:
   push:
@@ -39,7 +39,7 @@ jobs:
       uses: Azure/login@v2.1.0
       with:
         # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
-        creds: '{ ...service principal name...secret... }'
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
         # # ClientId of the Azure Service principal created.
         # client-id: # optional
         # # TenantId of the Azure Service principal created.
