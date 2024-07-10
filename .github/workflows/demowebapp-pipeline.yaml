@@ -26,9 +26,56 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore -o out
 
     - name: Test
       run: dotnet test --no-restore --verbosity normal
 
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: DemoWebApp
+        path: ./out
+
+    - name: Upload ARM templates
+      uses: actions/upload-artifact@v3
+      with:
+        name: DemoArmTemplates
+        path: ./arm
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs:  build-and-test
+
+    steps:
+    - name: Azure Login
+      uses: Azure/login@v2
+      with:
+        # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
       
+    - name: Deploy Bicep file
+      run: |
+        az deployment group create \
+          --resource-group Demo65191 \
+          --template-file ./arm/demowebapp-arm.template.bicep \
+          --parameters ./arm/demowebapp-arm.parameter.json
+
+    - name: Download DemoWebApp artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: DemoWebApp
+        path: out
+        
+    - name: Download ARM templates
+      uses: actions/download-artifact@v3
+      with:
+        name: DemoArmTemplates
+        path: arm
+
+    - name: Deploy DemoWebapp to Azure App Service Web App
+      uses: azure/webapps-deploy@2
+      with: 
+        app-name: jfdemowebapparm
+        package: ./out
+        
